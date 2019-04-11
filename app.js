@@ -11,6 +11,13 @@ function Animal (horn){
  all_animals.push(this);
 }
 
+Animal.get_animal_data = function(){
+  $.get('page-1.json', 'json').then( data => {
+    data.forEach(horn => new Animal(horn));
+    all_animals.forEach(horn => horn.render());
+  })
+}
+
 Animal.prototype.render = function(){
  const photo_section_html = $('#photo-template').html()
 
@@ -19,17 +26,19 @@ Animal.prototype.render = function(){
  $('#clone').find('h2').text(this.name);
  $('#clone').find('img').attr('src', this.image_url);
  $('#clone').find('p').text(this.title).text(this.description);
- $('#clone').attr('id', '');
+ $('#clone').attr('id', this.keyword);
+ $('#clone').attr('class', this.keyword);
 }
 
 const test_animal = new Animal({});
 test_animal.render();
 
-Animal.get_animal_data = function(){
- $.get('page-1.json', 'json').then( data => {
-   data.forEach(horn => new Animal(horn));
-   all_animals.forEach(horn => horn.render());
- })
-}
+$('#horned_animals').on('change', function() {
+  let select_value = $(this).val();
+  $('section').hide()
+  $(`.${select_value}`).show();
+  console.log(select_value);
+});
+
 
 Animal.get_animal_data();
